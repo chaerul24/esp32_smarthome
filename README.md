@@ -9,19 +9,7 @@
 
 ---
 
-## 📸 Preview Sistem
-
-### 🔌 Hardware (ESP8266 + Relay)
-
-![Hardware](https://via.placeholder.com/800x400?text=ESP8266+Relay+Lamp)
-
-### 📱 UI Mockup Dashboard
-
-![UI](https://via.placeholder.com/800x400?text=Smart+Home+Dashboard+UI)
-
----
-
-## 🚀 Fitur Utama
+## ✨ Fitur Utama
 
 * 💡 Kontrol lampu ON/OFF dari server
 * 🌐 REST API berbasis Node.js
@@ -32,56 +20,56 @@
 
 ---
 
-## 🧰 Teknologi yang Digunakan
+## 🧰 Teknologi
 
 * ⚡ Arduino (ESP8266)
-* 🌐 Node.js (REST API)
+* 🌐 Node.js (Backend API)
 * 📦 ArduinoJson
-* 🔗 HTTPS Communication
-* 📶 WiFi Networking
+* 🔗 REST API (HTTPS)
+* 📶 WiFi Communication
 
 ---
 
 ## 🏗️ Arsitektur Sistem
 
 ```text
-        📱 Client / Web App
-                 │
-                 ▼
-        🌐 Node.js REST API
-                 │
-                 ▼
-        📡 ESP8266 (WiFi)
-                 │
-                 ▼
-             💡 Lampu
+📱 Client / Web
+      │
+      ▼
+🌐 Node.js API
+      │
+      ▼
+📡 ESP8266 (WiFi)
+      │
+      ▼
+💡 Lampu
 ```
 
 ---
 
 ## ⚙️ Cara Kerja
 
-1. ESP8266 terhubung ke WiFi
-2. Device request ke server:
+1. 📡 ESP8266 terhubung ke WiFi
+2. 🌐 Request ke API:
 
    ```
    GET /api/lampu?KODE_UNIK=xxxx
    ```
-3. Server mengirim status (`on` / `off`)
-4. ESP:
+3. 📩 Server kirim status (`on` / `off`)
+4. ⚡ ESP:
 
    * Parse JSON
-   * Mengontrol GPIO (relay/lampu)
-5. (Optional) Kirim status balik ke server
+   * Kontrol GPIO
+5. 🔁 Sinkronisasi berulang tiap 3 detik
 
 ---
 
-## 🔌 Hardware Requirement
+## 🔌 Hardware
 
-* ESP8266 (NodeMCU / Wemos D1 Mini)
-* Relay Module / LED
-* Lampu / Beban listrik
-* Kabel jumper
+* 🔹 ESP8266 (NodeMCU / Wemos)
+* 🔹 Relay Module / LED
+* 🔹 Lampu / Beban listrik
+* 🔹 Kabel jumper
 
 ---
 
@@ -148,36 +136,36 @@ Body:
 
 ## 🧠 Core Function
 
-* `ambilStatusLampu()` → Ambil status dari server
-* `kirimStatus()` → Kirim status ke server
-* `setupREST()` → Setup awal
-* `loopREST()` → Loop utama
+* 🔄 `ambilStatusLampu()` → Ambil status dari server
+* 📡 `kirimStatus()` → Kirim status ke server
+* ⚙️ `setupREST()` → Setup awal
+* 🔁 `loopREST()` → Loop utama
 
 ---
 
-## ⚠️ Catatan Penting
+## ⚠️ Catatan
 
-* SSL menggunakan `setInsecure()` (tidak validasi sertifikat)
-* Pastikan koneksi WiFi stabil
-* Gunakan relay untuk perangkat listrik besar
+* ⚠️ SSL menggunakan `setInsecure()`
+* 📶 Pastikan WiFi stabil
+* 🔌 Gunakan relay untuk beban listrik besar
 
 ---
 
 ## 📊 Roadmap
 
-* [ ] Web Dashboard (React / Vue)
-* [ ] Mobile App (Flutter)
-* [ ] Voice Control (AI)
-* [ ] MQTT Integration
-* [ ] OTA Firmware Update
+* [ ] 🌐 Web Dashboard
+* [ ] 📱 Mobile App
+* [ ] 🎙️ Voice Control
+* [ ] 🔗 MQTT Integration
+* [ ] 🔄 OTA Update
 
 ---
 
-## 🧪 Demo Use Case
+## 🧪 Use Case
 
-* Kontrol lampu rumah dari HP
-* Automasi lampu (jadwal)
-* Integrasi smart home
+* 🏠 Kontrol lampu rumah dari jarak jauh
+* ⏰ Automasi lampu (jadwal)
+* 🤖 Integrasi smart home
 
 ---
 
@@ -193,12 +181,13 @@ MIT License
 
 ---
 
-## 🔥 Show Your Support
+## 🚀 Support
 
 Kalau project ini membantu:
 
 ⭐ Star repo ini
-🍴 Fork untuk pengembangan
-🚀 Gunakan di project kamu
+🍴 Fork project
+💡 Kembangkan lebih lanjut
 
 ---
+****
