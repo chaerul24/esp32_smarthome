@@ -24,7 +24,7 @@
 
 ## 📸 Dashboard Preview
 
-[Smart Home Dashboard](https://find.chaerul.xyz/image/Screenshot%202026-03-29%20145153.png)
+![Smart Home Dashboard](https://find.chaerul.xyz/image/Screenshot%202026-03-29%20145153.png)
 
 [find.chaerul.xyz](https://find.chaerul.xyz/smarthome)
 
