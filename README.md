@@ -1,111 +1,83 @@
-# 💡 Smart Home Lamp Control
+# 💡 Smart Home Lamp Control (ESP8266 + Node.js)
 
 ![IoT](https://img.shields.io/badge/IoT-SmartHome-blue)
-![Platform](https://img.shields.io/badge/Platform-ESP8266-green)
-![Backend](https://img.shields.io/badge/Backend-Node.js-black)
+![Device](https://img.shields.io/badge/Device-ESP8266-green)
+![Backend](https://img.shields.io/badge/API-Node.js-black)
+![Status](https://img.shields.io/badge/Status-Active-success)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-> 🚀 Sistem Smart Home berbasis IoT untuk mengontrol lampu dari jarak jauh menggunakan ESP8266 dan REST API Node.js.
+> 🚀 Sistem Smart Home berbasis IoT dengan fitur **auto WiFi setup (captive portal)** dan kontrol lampu via REST API.
 
 ---
 
-## ✨ Fitur Utama
+## ✨ Fitur Unggulan
 
+* 📡 Auto connect ke WiFi tersimpan
+* 🌐 Captive Portal (setup WiFi via browser)
 * 💡 Kontrol lampu ON/OFF dari server
-* 🌐 REST API berbasis Node.js
-* 📡 Sinkronisasi status real-time
-* 🔄 Auto polling setiap 3 detik
+* 🔄 Sinkronisasi status setiap 3 detik
+* 💾 Penyimpanan WiFi (EEPROM / storage)
+* 🔐 HTTPS request (WiFiClientSecure)
 * 🧠 Parsing JSON (ArduinoJson)
-* 🔐 Support HTTPS (WiFiClientSecure)
 
 ---
 
-## 🧰 Teknologi
-
-* ⚡ Arduino (ESP8266)
-* 🌐 Node.js (Backend API)
-* 📦 ArduinoJson
-* 🔗 REST API (HTTPS)
-* 📶 WiFi Communication
-
----
-
-## 🏗️ Arsitektur Sistem
+## 🧠 Cara Kerja Sistem
 
 ```text
-📱 Client / Web
-      │
-      ▼
-🌐 Node.js API
-      │
-      ▼
-📡 ESP8266 (WiFi)
-      │
-      ▼
-💡 Lampu
+🔌 Power ON
+   │
+   ├── 🔍 Cek WiFi tersimpan
+   │       │
+   │       ├── ✅ Ada → Connect WiFi → Jalankan REST API
+   │       │
+   │       └── ❌ Tidak ada → Masuk AP Mode
+   │                         │
+   │                         ▼
+   │                🌐 Captive Portal (ESP_Setup)
+   │                         │
+   │                         ▼
+   │                User input WiFi
+   │                         │
+   │                         ▼
+   │                💾 Simpan & Restart
+   │
+   ▼
+💡 Kontrol Lampu dari Server
 ```
 
 ---
 
-## ⚙️ Cara Kerja
+## 🌐 WiFi Manager (Captive Portal)
 
-1. 📡 ESP8266 terhubung ke WiFi
-2. 🌐 Request ke API:
+Saat device belum terkoneksi WiFi:
 
-   ```
-   GET /api/lampu?KODE_UNIK=xxxx
-   ```
-3. 📩 Server kirim status (`on` / `off`)
-4. ⚡ ESP:
+* ESP membuat hotspot:
 
-   * Parse JSON
-   * Kontrol GPIO
-5. 🔁 Sinkronisasi berulang tiap 3 detik
+  ```
+  SSID: ESP_Setup
+  ```
+* User connect via HP / Laptop
+* Browser otomatis redirect ke halaman setup
 
----
+### ⚙️ Fitur Portal:
 
-## 🔌 Hardware
-
-* 🔹 ESP8266 (NodeMCU / Wemos)
-* 🔹 Relay Module / LED
-* 🔹 Lampu / Beban listrik
-* 🔹 Kabel jumper
+* Scan WiFi sekitar 📶
+* Pilih SSID
+* Input password
+* Auto save & restart
 
 ---
 
-## 📁 Struktur Project
+## 🔌 Kontrol Lampu
 
-```bash
-.
-├── main.ino
-├── rest_handler.h
-├── config.h
-└── README.md
-```
-
----
-
-## 🔑 Konfigurasi
-
-Edit file `config.h`:
-
-```cpp
-#define WIFI_SSID "your_wifi"
-#define WIFI_PASSWORD "your_password"
-#define KODE_UNIK "device_001"
-```
-
----
-
-## 🌐 API Endpoint
-
-### 🔹 GET Status
+ESP akan request ke server:
 
 ```http
-GET https://find.chaerul.xyz/api/lampu?KODE_UNIK=xxxx
+GET /api/lampu?KODE_UNIK=xxxx
 ```
 
-Response:
+### Response:
 
 ```json
 {
@@ -115,57 +87,103 @@ Response:
 }
 ```
 
----
+### Aksi:
 
-### 🔹 POST Status
-
-```http
-POST https://find.chaerul.xyz/api/lampu/status
-```
-
-Body:
-
-```json
-{
-  "KODE_UNIK": "device_001",
-  "status": "on"
-}
-```
+* `on` → GPIO HIGH 💡
+* `off` → GPIO LOW ❌
 
 ---
 
-## 🧠 Core Function
+## 🧰 Teknologi
 
-* 🔄 `ambilStatusLampu()` → Ambil status dari server
-* 📡 `kirimStatus()` → Kirim status ke server
-* ⚙️ `setupREST()` → Setup awal
-* 🔁 `loopREST()` → Loop utama
+* ⚡ ESP8266 (Arduino)
+* 🌐 Node.js (REST API)
+* 📦 ArduinoJson
+* 🔗 HTTPS (WiFiClientSecure)
+* 📶 WiFi Networking
+* 🌐 ESP8266WebServer (Captive Portal)
+* 🌍 DNSServer (redirect semua request)
+
+---
+
+## 📁 Struktur Project
+
+```bash
+.
+├── main.ino
+├── wifi_manager.cpp
+├── wifi_manager.h
+├── rest_handler.h
+├── storage.h
+└── config.h
+```
+
+---
+
+## 🔑 Konfigurasi
+
+```cpp
+#define KODE_UNIK "device_001"
+```
+
+---
+
+## ⚙️ Mode Operasi
+
+### 🟢 Mode 1 — Normal Mode
+
+* WiFi tersimpan tersedia
+* Device connect ke internet
+* Jalankan REST API
+
+### 🟡 Mode 2 — Setup Mode
+
+* WiFi tidak tersedia
+* Aktifkan Access Point
+* Jalankan captive portal
+
+---
+
+## 🧠 Core Module
+
+### 📡 WiFi Manager
+
+* `connectSavedWiFi()` → connect WiFi
+* `setupAP()` → start hotspot
+* `handleWifi()` → handle request
+* `getWifiList()` → scan jaringan
+
+### 🌐 REST Handler
+
+* `ambilStatusLampu()` → ambil status dari server
+* `kirimStatus()` → kirim status (optional)
 
 ---
 
 ## ⚠️ Catatan
 
-* ⚠️ SSL menggunakan `setInsecure()`
-* 📶 Pastikan WiFi stabil
-* 🔌 Gunakan relay untuk beban listrik besar
+* SSL menggunakan `setInsecure()` ⚠️
+* Delay polling: 3 detik
+* Pastikan relay sesuai beban listrik
 
 ---
 
 ## 📊 Roadmap
 
-* [ ] 🌐 Web Dashboard
-* [ ] 📱 Mobile App
-* [ ] 🎙️ Voice Control
-* [ ] 🔗 MQTT Integration
+* [ ] 📱 Mobile App control
+* [ ] 🌐 Web dashboard
+* [ ] 🔔 Notifikasi status
+* [ ] 🔗 MQTT (realtime)
+* [ ] 🎙️ Voice control
 * [ ] 🔄 OTA Update
 
 ---
 
 ## 🧪 Use Case
 
-* 🏠 Kontrol lampu rumah dari jarak jauh
-* ⏰ Automasi lampu (jadwal)
-* 🤖 Integrasi smart home
+* 🏠 Smart home lamp control
+* 🏢 Kontrol lampu kantor
+* 🌍 Remote device monitoring
 
 ---
 
@@ -175,19 +193,12 @@ Body:
 
 ---
 
-## ⭐ License
-
-MIT License
-
----
-
-## 🚀 Support
+## ⭐ Support
 
 Kalau project ini membantu:
 
-⭐ Star repo ini
+⭐ Star repo
 🍴 Fork project
-💡 Kembangkan lebih lanjut
+🚀 Gunakan di project kamu
 
 ---
-****
